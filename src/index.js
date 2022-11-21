@@ -11,10 +11,14 @@ const taskRouter = require('./routers/task');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-    console.log(req.method, req.path)
-    next();
-})
+/*const multer = require('multer');
+const upload = multer({
+    dest: 'images'
+});
+app.post('/upload', upload.single('upload'), (req, res) => {
+    res.send();
+});*/
+
 
 app.use(express.json());
 app.use(userRouter);
@@ -24,16 +28,19 @@ app.listen(port, () => {
     console.log('Server is running on ' + port);
 });
 
+
+//  PREVIOUS STUFF
+
+// const jwt = require('jsonwebtoken');
+
+// const bcrypt = require('bcryptjs');
+
 /*
 const main = async () => {
     const task = await Task.findById('')
 }
 main();
 */
-
-const jwt = require('jsonwebtoken');
-
-const bcrypt = require('bcryptjs');
 
 /*
 const main = async () => {
@@ -46,9 +53,9 @@ main();
 
 /*
 const myFunction = async () => {
-    const token = jwt.sign({ _id: 'abc123' }, 'this_is_a_random_sign', { expiresIn: '7 days' });
+    const token = jwt.sign({ _id: 'abc123' }, process.env.JWT_SECRET, { expiresIn: '7 days' });
     console.log("json web token: " + token)
-    const data = jwt.verify(token, 'this_is_a_random_sign')
+    const data = jwt.verify(token, process.env.JWT_SECRET)
     console.log(data)
 }
 */
@@ -68,4 +75,10 @@ const myFunction_previous_way = async () => {
 */
 
 
+/*
+app.use((req, res, next) => {
+    console.log(req.method, req.path)
+    next();
+})
+*/
 
