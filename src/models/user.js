@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Task = require('./task');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -49,6 +50,14 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
+// set up a relationship between user and task
+// like foreign keys in relational dbs
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+});
+
 userSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject();
@@ -91,6 +100,17 @@ userSchema.pre('save', async function (next) {
     }
 
     next();
+})
+
+// delete all tasks from a user, if they delete themselves
+userSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
+    try {
+        const user = this;
+        await Task.deleteMany({ owner: user._id });
+        next();
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 const User = mongoose.model('User', userSchema);
